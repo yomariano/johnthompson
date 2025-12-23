@@ -4,22 +4,61 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Descendants of John Thompson - Family Tree</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+      font-family: 'Crimson Text', Georgia, 'Times New Roman', serif;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 2px,
+          rgba(139, 90, 43, 0.03) 2px,
+          rgba(139, 90, 43, 0.03) 4px
+        ),
+        linear-gradient(135deg, #f4e4bc 0%, #e8d4a8 25%, #f0e0c0 50%, #dcc8a0 75%, #f2deb8 100%);
       min-height: 100vh;
       padding: 20px;
+      position: relative;
     }
-    .container { max-width: 100%; margin: 0 auto; }
-    h1 { text-align: center; color: #2d3748; margin-bottom: 10px; }
-    .subtitle { text-align: center; color: #718096; margin-bottom: 20px; }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(139, 90, 43, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(101, 67, 33, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 40% 60%, rgba(139, 90, 43, 0.05) 0%, transparent 40%);
+      pointer-events: none;
+    }
+    .container { max-width: 100%; margin: 0 auto; position: relative; z-index: 1; }
+    h1 {
+      text-align: center;
+      color: #4a3520;
+      margin-bottom: 10px;
+      font-family: 'Cinzel', Georgia, serif;
+      font-weight: 700;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+      letter-spacing: 2px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #6b5240;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
     .controls {
-      background: white;
+      background: linear-gradient(180deg, #faf3e3 0%, #f0e4cc 100%);
       padding: 15px;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-radius: 4px;
+      border: 2px solid #8b6914;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.5),
+        0 4px 12px rgba(101, 67, 33, 0.3);
       margin-bottom: 20px;
       display: flex;
       flex-wrap: wrap;
@@ -30,26 +69,46 @@
       flex: 1;
       min-width: 200px;
       padding: 10px 15px;
-      border: 2px solid #e2e8f0;
-      border-radius: 8px;
+      border: 2px solid #a08050;
+      border-radius: 4px;
       font-size: 14px;
       outline: none;
+      background: #fefcf5;
+      font-family: 'Crimson Text', Georgia, serif;
+      color: #4a3520;
     }
-    .search-box:focus { border-color: #4299e1; }
+    .search-box:focus { border-color: #6b4423; background: #fffef8; }
+    .search-box::placeholder { color: #a08060; font-style: italic; }
     .btn {
       padding: 8px 16px;
-      border: none;
-      border-radius: 8px;
+      border: 2px solid;
+      border-radius: 4px;
       cursor: pointer;
       font-size: 13px;
       transition: all 0.2s;
+      font-family: 'Cinzel', Georgia, serif;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    .btn-gray { background: #edf2f7; color: #4a5568; }
-    .btn-gray:hover { background: #e2e8f0; }
-    .btn-blue { background: #ebf8ff; color: #2b6cb0; }
-    .btn-blue:hover { background: #bee3f8; }
-    .btn-green { background: #f0fff4; color: #276749; }
-    .btn-green:hover { background: #c6f6d5; }
+    .btn-gray {
+      background: linear-gradient(180deg, #e8dcc8 0%, #d4c4a8 100%);
+      color: #5a4a30;
+      border-color: #a08050;
+    }
+    .btn-gray:hover { background: linear-gradient(180deg, #f0e4d0 0%, #e0d0b0 100%); }
+    .btn-blue {
+      background: linear-gradient(180deg, #d4c4a0 0%, #c4b088 100%);
+      color: #4a3a20;
+      border-color: #8b7040;
+    }
+    .btn-blue:hover { background: linear-gradient(180deg, #e0d0a8 0%, #d0c098 100%); }
+    .btn-green {
+      background: linear-gradient(180deg, #c8b898 0%, #b8a480 100%);
+      color: #3a2a10;
+      border-color: #7a6030;
+    }
+    .btn-green:hover { background: linear-gradient(180deg, #d4c4a0 0%, #c4b090 100%); }
     .legend {
       display: flex;
       gap: 8px;
@@ -57,48 +116,68 @@
       margin-top: 10px;
       width: 100%;
     }
-    .legend span { font-size: 12px; padding: 3px 8px; border-radius: 4px; }
+    .legend span {
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 3px;
+      font-family: 'Cinzel', Georgia, serif;
+      font-weight: 600;
+    }
     .main-content {
       display: flex;
       gap: 20px;
     }
     .tree-container {
       flex: 1;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      padding: 20px;
+      background:
+        linear-gradient(180deg, rgba(255,252,245,0.95) 0%, rgba(250,243,227,0.95) 100%);
+      border-radius: 4px;
+      border: 3px double #8b6914;
+      box-shadow:
+        inset 0 0 30px rgba(139, 90, 43, 0.1),
+        0 6px 20px rgba(101, 67, 33, 0.25);
+      padding: 25px;
       height: calc(100vh - 200px);
       overflow: auto;
     }
     .details-panel {
       width: 380px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      padding: 20px;
+      background:
+        linear-gradient(180deg, rgba(255,252,245,0.95) 0%, rgba(250,243,227,0.95) 100%);
+      border-radius: 4px;
+      border: 3px double #8b6914;
+      box-shadow:
+        inset 0 0 30px rgba(139, 90, 43, 0.1),
+        0 6px 20px rgba(101, 67, 33, 0.25);
+      padding: 25px;
       display: none;
       height: calc(100vh - 200px);
       overflow-y: auto;
     }
     .details-panel.active { display: block; }
-    .details-panel h3 { margin-bottom: 15px; color: #2d3748; }
+    .details-panel h3 {
+      margin-bottom: 15px;
+      color: #4a3520;
+      font-family: 'Cinzel', Georgia, serif;
+      border-bottom: 2px solid #c4a060;
+      padding-bottom: 10px;
+    }
     .detail-row {
       display: flex;
       margin-bottom: 8px;
       font-size: 14px;
     }
-    .detail-label { font-weight: 600; color: #718096; width: 90px; flex-shrink: 0; }
-    .detail-value { color: #2d3748; word-break: break-word; }
+    .detail-label { font-weight: 600; color: #6b5240; width: 90px; flex-shrink: 0; }
+    .detail-value { color: #4a3520; word-break: break-word; }
     .close-btn {
       float: right;
       background: none;
       border: none;
       font-size: 20px;
       cursor: pointer;
-      color: #a0aec0;
+      color: #8b6914;
     }
-    .close-btn:hover { color: #718096; }
+    .close-btn:hover { color: #4a3520; }
     .node {
       padding: 4px 0;
     }
@@ -107,49 +186,80 @@
       align-items: center;
       gap: 8px;
       padding: 6px 12px;
-      border-radius: 8px;
+      border-radius: 3px;
       border: 2px solid;
       cursor: pointer;
       transition: all 0.2s;
       font-size: 14px;
+      font-family: 'Crimson Text', Georgia, serif;
     }
-    .node-content:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .node-content:hover {
+      box-shadow: 0 3px 10px rgba(101, 67, 33, 0.3);
+      transform: translateY(-1px);
+    }
     .toggle-btn {
       background: none;
       border: none;
       cursor: pointer;
       width: 20px;
       font-size: 12px;
-      color: #718096;
+      color: #8b6914;
     }
     .children {
       margin-left: 25px;
-      border-left: 2px solid #e2e8f0;
+      border-left: 2px solid #c4a060;
       padding-left: 10px;
       display: none;
     }
     .children.expanded { display: block; }
     .child-count {
       font-size: 11px;
-      color: #a0aec0;
+      color: #8b7050;
       margin-left: 5px;
     }
-    .year { font-size: 12px; color: #a0aec0; }
-    .highlight { background: #fefcbf !important; box-shadow: 0 0 0 3px #ecc94b; }
-    
-    /* Generation colors */
-    .gen-1 { background: #fef3c7; border-color: #f59e0b; }
-    .gen-2 { background: #dbeafe; border-color: #3b82f6; }
-    .gen-3 { background: #d1fae5; border-color: #10b981; }
-    .gen-4 { background: #ede9fe; border-color: #8b5cf6; }
-    .gen-5 { background: #fce7f3; border-color: #ec4899; }
-    .gen-6 { background: #cffafe; border-color: #06b6d4; }
-    .gen-7 { background: #ffedd5; border-color: #f97316; }
-    .gen-8 { background: #ccfbf1; border-color: #14b8a6; }
-    .gen-9 { background: #e0e7ff; border-color: #6366f1; }
-    .gen-10 { background: #ffe4e6; border-color: #f43f5e; }
+    .year { font-size: 12px; color: #8b7050; font-style: italic; }
+    .highlight { background: #f5e6b8 !important; box-shadow: 0 0 0 3px #c4a030; }
 
-    .footer { text-align: center; margin-top: 20px; color: #a0aec0; font-size: 13px; }
+    /* Generation colors - earthy antique palette */
+    .gen-1 { background: linear-gradient(135deg, #f5e6c8 0%, #e8d4a0 100%); border-color: #b8860b; color: #5a4010; }
+    .gen-2 { background: linear-gradient(135deg, #e8dcc8 0%, #d4c4a0 100%); border-color: #a0784c; color: #4a3020; }
+    .gen-3 { background: linear-gradient(135deg, #dcd0b8 0%, #c8b898 100%); border-color: #8b7355; color: #3a2818; }
+    .gen-4 { background: linear-gradient(135deg, #d0c4a8 0%, #bcac88 100%); border-color: #7a6040; color: #302010; }
+    .gen-5 { background: linear-gradient(135deg, #c8bc98 0%, #b4a478 100%); border-color: #6b5030; color: #281808; }
+    .gen-6 { background: linear-gradient(135deg, #c0b490 0%, #ac9c70 100%); border-color: #5c4428; color: #201000; }
+    .gen-7 { background: linear-gradient(135deg, #b8ac88 0%, #a49468 100%); border-color: #4d3820; color: #180800; }
+    .gen-8 { background: linear-gradient(135deg, #b0a480 0%, #9c8c60 100%); border-color: #403018; color: #100000; }
+    .gen-9 { background: linear-gradient(135deg, #a89c78 0%, #948458 100%); border-color: #352810; color: #0a0000; }
+    .gen-10 { background: linear-gradient(135deg, #a09470 0%, #8c7c50 100%); border-color: #2a2008; color: #050000; }
+
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      color: #6b5240;
+      font-size: 13px;
+      font-style: italic;
+    }
+
+    /* Scrollbar styling for antique look */
+    .tree-container::-webkit-scrollbar,
+    .details-panel::-webkit-scrollbar {
+      width: 12px;
+    }
+    .tree-container::-webkit-scrollbar-track,
+    .details-panel::-webkit-scrollbar-track {
+      background: #e8dcc8;
+      border-radius: 4px;
+    }
+    .tree-container::-webkit-scrollbar-thumb,
+    .details-panel::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #c4a060 0%, #a08040 100%);
+      border-radius: 4px;
+      border: 2px solid #e8dcc8;
+    }
+    .tree-container::-webkit-scrollbar-thumb:hover,
+    .details-panel::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(180deg, #b89050 0%, #907030 100%);
+    }
   </style>
 </head>
 <body>
@@ -274,8 +384,8 @@
       let content = '';
       
       // Basic Info Section
-      content += '<div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #e2e8f0">';
-      content += '<div style="font-weight:600;color:#4a5568;margin-bottom:8px">📋 Basic Info</div>';
+      content += '<div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #c4a060">';
+      content += '<div style="font-weight:600;color:#4a3520;margin-bottom:8px;font-family:Cinzel,Georgia,serif">Basic Info</div>';
       content += `<div class="detail-row"><span class="detail-label">ID:</span><span class="detail-value">${person.i}</span></div>`;
       content += `<div class="detail-row"><span class="detail-label">Generation:</span><span class="detail-value">${person.g}</span></div>`;
       if (person.o) content += `<div class="detail-row"><span class="detail-label">Occupation:</span><span class="detail-value">${person.o}</span></div>`;
@@ -283,8 +393,8 @@
       
       // Birth Info Section
       if (person.b || person.bp) {
-        content += '<div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #e2e8f0">';
-        content += '<div style="font-weight:600;color:#4a5568;margin-bottom:8px">💒 Birth</div>';
+        content += '<div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #c4a060">';
+        content += '<div style="font-weight:600;color:#4a3520;margin-bottom:8px;font-family:Cinzel,Georgia,serif">Birth</div>';
         if (person.b) content += `<div class="detail-row"><span class="detail-label">Year:</span><span class="detail-value">${person.b}</span></div>`;
         if (person.bp) content += `<div class="detail-row"><span class="detail-label">Place:</span><span class="detail-value">${person.bp}</span></div>`;
         content += '</div>';
@@ -292,8 +402,8 @@
       
       // Death Info Section
       if (person.dd || person.dp) {
-        content += '<div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #e2e8f0">';
-        content += '<div style="font-weight:600;color:#4a5568;margin-bottom:8px">✝️ Death</div>';
+        content += '<div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #c4a060">';
+        content += '<div style="font-weight:600;color:#4a3520;margin-bottom:8px;font-family:Cinzel,Georgia,serif">Death</div>';
         if (person.dd) content += `<div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value">${person.dd}</span></div>`;
         if (person.dp) content += `<div class="detail-row"><span class="detail-label">Place:</span><span class="detail-value">${person.dp}</span></div>`;
         content += '</div>';
@@ -301,8 +411,8 @@
       
       // Marriage Info Section
       if (person.m && person.m.length) {
-        content += '<div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #e2e8f0">';
-        content += '<div style="font-weight:600;color:#4a5568;margin-bottom:8px">💒 Marriage(s)</div>';
+        content += '<div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #c4a060">';
+        content += '<div style="font-weight:600;color:#4a3520;margin-bottom:8px;font-family:Cinzel,Georgia,serif">Marriage(s)</div>';
         person.m.forEach((spouse, idx) => {
           content += `<div class="detail-row"><span class="detail-label">Spouse ${person.m.length > 1 ? (idx+1) : ''}:</span><span class="detail-value">${spouse}</span></div>`;
         });
@@ -312,10 +422,10 @@
       // Children Info Section
       if (person.c && person.c.length) {
         content += '<div style="margin-bottom:10px">';
-        content += '<div style="font-weight:600;color:#4a5568;margin-bottom:8px">👶 Children (' + person.c.length + ')</div>';
+        content += '<div style="font-weight:600;color:#4a3520;margin-bottom:8px;font-family:Cinzel,Georgia,serif">Children (' + person.c.length + ')</div>';
         content += '<div style="max-height:150px;overflow-y:auto;font-size:13px">';
         person.c.forEach((child, idx) => {
-          content += `<div style="padding:4px 0;border-bottom:1px solid #f0f0f0">${idx+1}. ${child.n}${child.b ? ' ('+child.b+')' : ''}</div>`;
+          content += `<div style="padding:4px 0;border-bottom:1px solid #d4c4a0">${idx+1}. ${child.n}${child.b ? ' ('+child.b+')' : ''}</div>`;
         });
         content += '</div></div>';
       }
