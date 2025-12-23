@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Descendants of John Thompson - Family Tree</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { text-align: center; color: #2d3748; margin-bottom: 10px; }
+    .subtitle { text-align: center; color: #718096; margin-bottom: 20px; }
+    .controls {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 15px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+    .search-box:focus { border-color: #4299e1; }
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .btn-gray { background: #edf2f7; color: #4a5568; }
+    .btn-gray:hover { background: #e2e8f0; }
+    .btn-blue { background: #ebf8ff; color: #2b6cb0; }
+    .btn-blue:hover { background: #bee3f8; }
+    .btn-green { background: #f0fff4; color: #276749; }
+    .btn-green:hover { background: #c6f6d5; }
+    .legend {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      width: 100%;
+    }
+    .legend span { font-size: 12px; padding: 3px 8px; border-radius: 4px; }
+    .main-content {
+      display: flex;
+      gap: 20px;
+    }
+    .tree-container {
+      flex: 1;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      max-height: 70vh;
+      overflow: auto;
+    }
+    .details-panel {
+      width: 380px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 20px;
+      display: none;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    .details-panel.active { display: block; }
+    .details-panel h3 { margin-bottom: 15px; color: #2d3748; }
+    .detail-row {
+      display: flex;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .detail-label { font-weight: 600; color: #718096; width: 90px; flex-shrink: 0; }
+    .detail-value { color: #2d3748; word-break: break-word; }
+    .close-btn {
+      float: right;
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #a0aec0;
+    }
+    .close-btn:hover { color: #718096; }
+    .node {
+      padding: 4px 0;
+    }
+    .node-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 2px solid;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+    .node-content:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+    .toggle-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      width: 20px;
+      font-size: 12px;
+      color: #718096;
+    }
+    .children {
+      margin-left: 25px;
+      border-left: 2px solid #e2e8f0;
+      padding-left: 10px;
+      display: none;
+    }
+    .children.expanded { display: block; }
+    .child-count {
+      font-size: 11px;
+      color: #a0aec0;
+      margin-left: 5px;
+    }
+    .year { font-size: 12px; color: #a0aec0; }
+    .highlight { background: #fefcbf !important; box-shadow: 0 0 0 3px #ecc94b; }
+    
+    /* Generation colors */
+    .gen-1 { background: #fef3c7; border-color: #f59e0b; }
+    .gen-2 { background: #dbeafe; border-color: #3b82f6; }
+    .gen-3 { background: #d1fae5; border-color: #10b981; }
+    .gen-4 { background: #ede9fe; border-color: #8b5cf6; }
+    .gen-5 { background: #fce7f3; border-color: #ec4899; }
+    .gen-6 { background: #cffafe; border-color: #06b6d4; }
+    .gen-7 { background: #ffedd5; border-color: #f97316; }
+    .gen-8 { background: #ccfbf1; border-color: #14b8a6; }
+    .gen-9 { background: #e0e7ff; border-color: #6366f1; }
+    .gen-10 { background: #ffe4e6; border-color: #f43f5e; }
+
+    .footer { text-align: center; margin-top: 20px; color: #a0aec0; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌳 Descendants of John Thompson</h1>
+    <p class="subtitle">Interactive family tree with <strong id="total-count">0</strong> people across 10 generations</p>
+    
+    <div class="controls">
+      <input type="text" class="search-box" id="search" placeholder="Search by name...">
+      <button class="btn btn-gray" onclick="collapseAll()">Collapse All</button>
+      <button class="btn btn-blue" onclick="expandToGen(3)">Gen 1-3</button>
+      <button class="btn btn-blue" onclick="expandToGen(4)">Gen 1-4</button>
+      <button class="btn btn-green" onclick="expandAll()">Expand All</button>
+      
+      <div class="legend">
+        <span style="color:#718096">Generations:</span>
+        <span class="gen-1">1</span>
+        <span class="gen-2">2</span>
+        <span class="gen-3">3</span>
+        <span class="gen-4">4</span>
+        <span class="gen-5">5</span>
+        <span class="gen-6">6</span>
+        <span class="gen-7">7</span>
+        <span class="gen-8">8</span>
+        <span class="gen-9">9</span>
+        <span class="gen-10">10</span>
+      </div>
+    </div>
+    
+    <div class="main-content">
+      <div class="tree-container" id="tree"></div>
+      <div class="details-panel" id="details">
+        <button class="close-btn" onclick="closeDetails()">&times;</button>
+        <h3 id="detail-name"></h3>
+        <div id="detail-content"></div>
+      </div>
+    </div>
+    
+    <p class="footer">Click on any person to view details • Click ▶ to expand branches</p>
+  </div>
+
+  <script>
+    // Tree data (first 4 generations with details)
+    const treeData = {"i":"1.1","n":"John Thompson","g":1,"m":["Susan Marsh"],"c":[{"i":"2.1","n":"George Thompson","g":2},{"i":"2.2","n":"James Thompson","g":2},{"i":"2.3","n":"Arthur Thompson","g":2},{"i":"2.4","n":"William Thompson","g":2},{"i":"2.5","n":"Sophia Thompson","g":2},{"i":"2.6","n":"John Thompson","g":2,"b":"1784","bp":"Freston, Suffolk, England","dp":"Magdalena, Buenos Aires","o":"Farmer, Shepherd","m":["Segovia","Martha Brocksopp","Phoebe Rowe"],"c":[{"i":"3.1","n":"George Thompson","g":3,"b":"1809","bp":"Southwark, London","dp":"Argentina","dd":"11 April 1863"},{"i":"3.2","n":"John Julián Thompson","g":3,"b":"1822","bp":"Buenos Aires","dp":"Argentina","dd":"2 August 1897","o":"Farmer"},{"i":"3.3","n":"Dominga Susannah Thompson","g":3,"b":"1824","bp":"Cañuelas, Buenos Aires","dp":"Los Retamos, Tristán Suárez","dd":"6 June 1903","o":"Teacher, Farmer","m":["George Rowe"],"c":[{"i":"4.1","n":"Henry Rowe","g":4,"b":"1841","bp":"Cañuelas"},{"i":"4.2","n":"Harriet Rowe","g":4,"b":"1842","bp":"Cañuelas"},{"i":"4.3","n":"George Rowe","g":4,"b":"1844","bp":"El Cardal","o":"Farmer"},{"i":"4.4","n":"John Thompson Rowe","g":4,"b":"1846","bp":"El Cardal","dd":"4 December 1929","o":"Teacher"}]},{"i":"3.4","n":"Ignacio Henry Thompson","g":3,"b":"1826","bp":"Cañuelas, Buenos Aires","dp":"San Vicente","dd":"18 September 1897","o":"Farmer","m":["Isidora Maciel","Feliza Palacios","Margaret Cowan"],"c":[{"i":"4.5","n":"Isidora Thompson","g":4,"b":"1847","bp":"Magdalena"},{"i":"4.6","n":"Encarnación Yrenea Palacios","g":4,"b":"1849"},{"i":"4.7","n":"Toribio Palacios Thompson","g":4,"b":"1851","bp":"Magdalena","o":"Farmer"},{"i":"4.8","n":"William Henry Thompson","g":4,"b":"1858","bp":"Magdalena"},{"i":"4.9","n":"Susan Harriet Thompson","g":4,"b":"1859","bp":"Magdalena","dd":"20 January 1882"},{"i":"4.10","n":"Enrique Alejandro Thompson","g":4,"b":"1862","bp":"Magdalena","o":"Farmer"},{"i":"4.11","n":"Juan Thompson","g":4,"b":"1863","bp":"Magdalena","dd":"23 May 1951","o":"Farmer","m":["Sara Ethel Denyer"],"c":[{"i":"5.24","n":"Sara Isabel Thompson","g":5,"bp":"Magdalena","o":"Farmer"},{"i":"5.25","n":"Susana Margarita Thompson","g":5,"b":"1894","bp":"Magdalena"},{"i":"5.26","n":"Ernesto Juan Thompson","g":5,"b":"1896","bp":"Magdalena"},{"i":"5.27","n":"Enrique Juan Thompson","g":5,"b":"1898","bp":"Magdalena","o":"Farmer"},{"i":"5.28","n":"Dora Ada Thompson","g":5,"b":"1901","bp":"Magdalena"},{"i":"5.29","n":"Lía Mercedes Thompson","g":5,"b":"1904","bp":"La Plata"},{"i":"5.30","n":"Alfredo Hugo Pique Thompson","g":5,"b":"1910","bp":"La Plata","o":"Farmer"}]},{"i":"4.12","n":"George William Thompson","g":4,"b":"1865","bp":"Cinco Alamos","m":["Edith Julia Cooper"],"c":[{"i":"5.31","n":"George Kenneth Thompson","g":5,"b":"1894","bp":"England"},{"i":"5.32","n":"Gwendolin Marie Thompson","g":5,"b":"1896","bp":"England"},{"i":"5.33","n":"John Eric Sidney Thompson","g":5,"b":"1898","bp":"London"}]},{"i":"4.13","n":"Alfred Lot Thompson","g":4,"b":"1867","bp":"Cinco Alamos","dd":"26 June 1956","o":"Farmer"},{"i":"4.14","n":"Martha Brocksopp Thompson","g":4,"b":"1869","bp":"Cinco Alamos"},{"i":"4.15","n":"Rodolfo Brocksopp Thompson","g":4,"b":"1871","bp":"Cinco Alamos, Magdalena","dd":"16 June 1936","o":"Farmer","m":["Dominga Ezequiela Linhart"],"c":[{"i":"5.35","n":"Adolfo Nicolás Thompson","g":5,"b":"1911","bp":"Buenos Aires","dd":"16 October 1970","o":"Farmer","m":["Dora Magdalena Bagnasco"],"c":[{"i":"6.61","n":"Susana Alicia Thompson","g":6,"b":"1949","bp":"Buenos Aires"},{"i":"6.62","n":"Rodolfo Rubén Thompson","g":6,"b":"1952","bp":"Buenos Aires"},{"i":"6.63","n":"Analía Mabel Thompson","g":6,"b":"1954","bp":"Buenos Aires"},{"i":"6.64","n":"Jorge Carlos Thompson","g":6,"b":"1958","bp":"Buenos Aires"}]},{"i":"5.36","n":"Guillermo Eduardo Thompson","g":5,"b":"1912","bp":"Buenos Aires","dd":"27 October 1912"},{"i":"5.37","n":"Haydée Pura Thompson","g":5,"b":"1917","bp":"Buenos Aires","dd":"8 April 1999","o":"Farmer","m":["José Bagnasco"],"c":[{"i":"6.65","n":"Elsa Margarita Bagnasco","g":6,"b":"1940","bp":"Buenos Aires"},{"i":"6.66","n":"Roberto Juan Bagnasco","g":6,"b":"1941","bp":"Buenos Aires"},{"i":"6.67","n":"Elda Zulema Bagnasco","g":6,"b":"1942","bp":"Buenos Aires"},{"i":"6.68","n":"Yolanda Beatriz Bagnasco","g":6,"b":"1944","bp":"Buenos Aires"},{"i":"6.69","n":"Haydée Alicia Bagnasco","g":6,"b":"1948","bp":"Buenos Aires"},{"i":"6.70","n":"Inés Delia Bagnasco","g":6,"b":"1949","bp":"Buenos Aires"},{"i":"6.71","n":"Silvia Irene Bagnasco","g":6,"b":"1953","bp":"Buenos Aires"}]},{"i":"5.38","n":"Lydia Ada Thompson","g":5,"b":"1919","bp":"Buenos Aires","o":"Farmer","m":["Marco Antonio Sierra"],"c":[{"i":"6.72","n":"Lidia Ada Sierra","g":6,"b":"1944","bp":"Buenos Aires"},{"i":"6.73","n":"Marco Antonio Jesus Sierra","g":6,"b":"1945","bp":"Buenos Aires"},{"i":"6.74","n":"Elvira Virginia Sierra","g":6,"b":"1947","bp":"Buenos Aires"},{"i":"6.75","n":"Rodolfo Juan Ramón Sierra","g":6,"b":"1948","bp":"Buenos Aires"},{"i":"6.76","n":"Cecilia Aída Sierra","g":6,"b":"1951","bp":"Buenos Aires"},{"i":"6.77","n":"Adriana Evelina Sierra","g":6,"b":"1952","bp":"Buenos Aires"},{"i":"6.78","n":"Hemilse Silvana Sierra","g":6,"b":"1954","bp":"Arenaza, Buenos Aires","o":"Artist","m":["Gerardo Manuel Rodríguez Ardiles"],"c":[{"i":"7.132","n":"María Virginia Rodríguez Ardiles","g":7,"b":"1985","bp":"Buenos Aires"},{"i":"7.133","n":"Mariano Germán Rodríguez Ardiles","g":7,"b":"1988","bp":"Buenos Aires"}]},{"i":"6.79","n":"Gustavo Adolfo Sierra","g":6,"b":"1955","bp":"Arenaza, Buenos Aires","m":["Beatriz Chimondeguy"],"c":[{"i":"7.134","n":"Diego Martín Sierra","g":7,"b":"1984","bp":"Buenos Aires"},{"i":"7.135","n":"Matias Agustín Sierra","g":7,"b":"1986","bp":"Buenos Aires"}]}]},{"i":"5.39","n":"Celsa Margarita Thompson","g":5,"b":"1919","bp":"Buenos Aires","o":"Farmer","m":["Carlos Guillermo Sierra"],"c":[{"i":"6.80","n":"Carlos Guillermo Gerardo Sierra","g":6,"b":"1948","bp":"Buenos Aires"},{"i":"6.81","n":"Celsa Margarita Sierra","g":6,"b":"1951","bp":"Buenos Aires"}]}]},{"i":"4.16","n":"Janet Ada Thompson","g":4,"b":"1875","bp":"Buenos Aires","dd":"30 April 1975","m":["John Alfred Earnshaw"],"c":[{"i":"5.40","n":"Lydia Beatrice Earnshaw","g":5,"b":"1899","bp":"Buenos Aires"},{"i":"5.41","n":"Enrique Mauricio Earnshaw","g":5,"b":"1902","bp":"Buenos Aires"},{"i":"5.42","n":"Juan Alfredo Earnshaw","g":5,"b":"1905","bp":"Buenos Aires"}]}]},{"i":"3.5","n":"Norberta Martha Thompson","g":3,"b":"1829","bp":"Buenos Aires","dd":"1901","m":["William Dickson"],"c":[{"i":"4.17","n":"Hannah Dickson","g":4,"b":"1860","bp":"Buenos Aires","dd":"4 September 1957"},{"i":"4.18","n":"Mathilda Dickson","g":4,"b":"1862","bp":"Buenos Aires","dd":"12 April 1954"},{"i":"4.19","n":"Martha Ellen Dickson","g":4,"b":"1864","bp":"Buenos Aires","dd":"18 November 1864"},{"i":"4.20","n":"Margaret Dickson","g":4,"b":"1866","bp":"Ensenada"},{"i":"4.21","n":"William Dickson","g":4,"b":"1867","bp":"Ensenada","dd":"30 November 1955","o":"Farmer","m":["Norberta Thompson"],"c":[{"i":"5.47","n":"Guillermo Carlos Dickson","g":5,"bp":"Guaminí"},{"i":"5.48","n":"Inés Dickson","g":5,"b":"1895","bp":"Guaminí"},{"i":"5.49","n":"Sara Adelaida Dickson","g":5,"b":"1896","bp":"Mercedes"},{"i":"5.50","n":"Ricardo Reynaldo Dickson","g":5,"b":"1899","bp":"Tristán Suárez"},{"i":"5.51","n":"Alberto Dickson","g":5,"b":"1901","bp":"Tristán Suárez"},{"i":"5.52","n":"Enrique Pedro Dickson","g":5,"b":"1903","bp":"Tristán Suárez"},{"i":"5.53","n":"Roberto Dickson","g":5,"b":"1904","bp":"Tristán Suárez"},{"i":"5.54","n":"Jorge Dickson","g":5,"b":"1904","bp":"Tristán Suárez"}]},{"i":"4.22","n":"Martha Dickson","g":4,"b":"1870","bp":"Ensenada","dd":"14 July 1963"},{"i":"4.23","n":"Agnes Dickson","g":4,"b":"1872","bp":"Buenos Aires","dd":"10 November 1885"}]},{"i":"3.6","n":"Galo Lott Thompson","g":3,"b":"1831","bp":"Cañuelas, Buenos Aires","dd":"26 March 1891","o":"Farmer","m":["Margaret McKiddie"],"c":[{"i":"4.24","n":"Lot Thompson","g":4,"b":"1857","bp":"Saladillo","dd":"5 June 1869"},{"i":"4.25","n":"Albert James Thompson","g":4,"b":"1859","bp":"Saladillo"},{"i":"4.26","n":"Hannah Burns Thompson","g":4,"b":"1861","bp":"Saladillo","dd":"9 September 1924"},{"i":"4.27","n":"Margaret Ellen Thompson","g":4,"b":"1863","bp":"Saladillo"},{"i":"4.28","n":"Carolina Flora Thompson","g":4,"b":"1866","bp":"Saladillo"},{"i":"4.29","n":"Alejandro Rafael Thompson","g":4,"b":"1868","bp":"Saladillo","dd":"27 January 1937"},{"i":"4.30","n":"Alfredo Thompson","g":4,"b":"1872"},{"i":"4.31","n":"Emiliana Thompson","g":4,"b":"1875","bp":"Buenos Aires"},{"i":"4.32","n":"Herminda Elvira Brocksopp Thompson","g":4,"b":"1881","bp":"Saladillo"}]},{"i":"3.7","n":"Phoebe Thompson","g":3,"b":"1837","bp":"Buenos Aires","m":["José María Faletty Avalos"],"c":[{"i":"4.33","n":"Edmundo Faletty Thompson","g":4,"b":"1859"},{"i":"4.34","n":"Elena María Faletty Thompson","g":4,"b":"1861"},{"i":"4.35","n":"Arturo José Faletty Thompson","g":4,"b":"1864","bp":"Buenos Aires"},{"i":"4.36","n":"Augusta Faletty Thompson","g":4,"b":"1869","bp":"Buenos Aires"},{"i":"4.37","n":"Phoebe Faletty Thompson","g":4,"b":"1870","bp":"Buenos Aires","dd":"1955"},{"i":"4.38","n":"Gerardo Cecilio Faletty Thompson","g":4,"b":"1871","bp":"Buenos Aires"},{"i":"4.39","n":"María Dolores Faletty Thompson","g":4,"b":"1873","bp":"Buenos Aires"},{"i":"4.40","n":"José Leopoldo Faletty Thompson","g":4,"b":"1877","bp":"Buenos Aires"},{"i":"4.41","n":"Carlos Segundo Faletty Thompson","g":4,"b":"1879","dd":"1974"}]},{"i":"3.8","n":"Edward Thompson","g":3,"b":"1840","bp":"Buenos Aires","dd":"1840"},{"i":"3.9","n":"Helen Thompson","g":3,"b":"1841","bp":"Buenos Aires","dd":"before 1869","m":["Edmundo Cecilio Kirk"],"c":[{"i":"4.42","n":"Edmund T. Kirk","g":4,"b":"1862","bp":"Buenos Aires","o":"Farmer"}]},{"i":"3.10","n":"William Thompson","g":3,"b":"1841","bp":"Buenos Aires","dd":"1851"},{"i":"3.11","n":"Anastasia Francisca Augusta del Sagrado Corazón de Jesús Thompson","g":3,"b":"1843","bp":"Buenos Aires","dp":"Lima, Peru","dd":"18 February 1906","m":["Ralph John Barton Wild"],"c":[{"i":"4.43","n":"Norma Agnes Barton Thompson","g":4,"b":"1865","bp":"Buenos Aires"},{"i":"4.44","n":"Amalia Eve Barton Thompson","g":4,"b":"1866","bp":"Buenos Aires","dd":"26 January 1963"},{"i":"4.45","n":"Ralph Alexander Barton Thompson","g":4,"b":"1869","bp":"Buenos Aires","dd":"25 November 1946"},{"i":"4.46","n":"Albert Edward Barton Thompson","g":4,"b":"1870","bp":"Buenos Aires","dd":"25 October 1950"},{"i":"4.47","n":"Arminda María del Rosario Barton Thompson","g":4,"b":"1872","bp":"Buenos Aires"},{"i":"4.48","n":"Hortensia Florencia Phebe Barton Thompson","g":4,"b":"1877","bp":"Lima"},{"i":"4.49","n":"María Augusta Leticia Barton Thompson","g":4,"b":"1881","bp":"Lima","dd":"2 October 1953"},{"i":"4.50","n":"Leopoldo Ernesto Juan de Mata Barton Thompson","g":4,"b":"1884","bp":"Lima","dd":"14 February 1956"},{"i":"4.51","n":"Aída Lucía Mercedes Barton Thompson","g":4,"b":"1887","bp":"Lima","dd":"13 May 1958","o":"Teacher"}]},{"i":"3.12","n":"Stillborn Thompson","g":3,"b":"1845","dd":"20 March 1845"},{"i":"3.13","n":"Stillborn Thompson","g":3,"b":"1847","bp":"Buenos Aires"}]}]};
+
+    let expandedNodes = new Set(['1.1', '2.6']);
+    let selectedPerson = null;
+
+    function countNodes(node) {
+      let count = 1;
+      if (node.c) {
+        node.c.forEach(child => count += countNodes(child));
+      }
+      return count;
+    }
+
+    function renderTree() {
+      const container = document.getElementById('tree');
+      container.innerHTML = renderNode(treeData);
+      document.getElementById('total-count').textContent = countNodes(treeData);
+    }
+
+    function renderNode(node, level = 0) {
+      const hasChildren = node.c && node.c.length > 0;
+      const isExpanded = expandedNodes.has(node.i);
+      const searchTerm = document.getElementById('search').value.toLowerCase();
+      const isHighlighted = searchTerm && node.n.toLowerCase().includes(searchTerm);
+      
+      let html = `<div class="node" style="margin-left: ${level * 10}px">`;
+      
+      if (hasChildren) {
+        html += `<button class="toggle-btn" onclick="toggleNode('${node.i}')">${isExpanded ? '▼' : '▶'}</button>`;
+      } else {
+        html += `<span style="display:inline-block;width:20px"></span>`;
+      }
+      
+      html += `<span class="node-content gen-${node.g} ${isHighlighted ? 'highlight' : ''}" onclick="showDetails('${node.i}')">`;
+      html += `<span>${node.n}</span>`;
+      if (node.b) html += `<span class="year">(${node.b})</span>`;
+      if (hasChildren) html += `<span class="child-count">👥 ${node.c.length}</span>`;
+      html += `</span>`;
+      
+      if (hasChildren) {
+        html += `<div class="children ${isExpanded ? 'expanded' : ''}" id="children-${node.i}">`;
+        node.c.forEach(child => {
+          html += renderNode(child, level + 1);
+        });
+        html += `</div>`;
+      }
+      
+      html += `</div>`;
+      return html;
+    }
+
+    function findNode(node, id) {
+      if (node.i === id) return node;
+      if (node.c) {
+        for (let child of node.c) {
+          const found = findNode(child, id);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    function toggleNode(id) {
+      if (expandedNodes.has(id)) {
+        expandedNodes.delete(id);
+      } else {
+        expandedNodes.add(id);
+      }
+      renderTree();
+    }
+
+    function showDetails(id) {
+      const person = findNode(treeData, id);
+      if (!person) return;
+      
+      selectedPerson = person;
+      document.getElementById('detail-name').textContent = person.n;
+      
+      let content = '';
+      
+      // Basic Info Section
+      content += '<div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #e2e8f0">';
+      content += '<div style="font-weight:600;color:#4a5568;margin-bottom:8px">📋 Basic Info</div>';
+      content += `<div class="detail-row"><span class="detail-label">ID:</span><span class="detail-value">${person.i}</span></div>`;
+      content += `<div class="detail-row"><span class="detail-label">Generation:</span><span class="detail-value">${person.g}</span></div>`;
+      if (person.o) content += `<div class="detail-row"><span class="detail-label">Occupation:</span><span class="detail-value">${person.o}</span></div>`;
+      content += '</div>';
+      
+      // Birth Info Section
+      if (person.b || person.bp) {
+        content += '<div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #e2e8f0">';
+        content += '<div style="font-weight:600;color:#4a5568;margin-bottom:8px">💒 Birth</div>';
+        if (person.b) content += `<div class="detail-row"><span class="detail-label">Year:</span><span class="detail-value">${person.b}</span></div>`;
+        if (person.bp) content += `<div class="detail-row"><span class="detail-label">Place:</span><span class="detail-value">${person.bp}</span></div>`;
+        content += '</div>';
+      }
+      
+      // Death Info Section
+      if (person.dd || person.dp) {
+        content += '<div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #e2e8f0">';
+        content += '<div style="font-weight:600;color:#4a5568;margin-bottom:8px">✝️ Death</div>';
+        if (person.dd) content += `<div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value">${person.dd}</span></div>`;
+        if (person.dp) content += `<div class="detail-row"><span class="detail-label">Place:</span><span class="detail-value">${person.dp}</span></div>`;
+        content += '</div>';
+      }
+      
+      // Marriage Info Section
+      if (person.m && person.m.length) {
+        content += '<div style="margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid #e2e8f0">';
+        content += '<div style="font-weight:600;color:#4a5568;margin-bottom:8px">💒 Marriage(s)</div>';
+        person.m.forEach((spouse, idx) => {
+          content += `<div class="detail-row"><span class="detail-label">Spouse ${person.m.length > 1 ? (idx+1) : ''}:</span><span class="detail-value">${spouse}</span></div>`;
+        });
+        content += '</div>';
+      }
+      
+      // Children Info Section
+      if (person.c && person.c.length) {
+        content += '<div style="margin-bottom:10px">';
+        content += '<div style="font-weight:600;color:#4a5568;margin-bottom:8px">👶 Children (' + person.c.length + ')</div>';
+        content += '<div style="max-height:150px;overflow-y:auto;font-size:13px">';
+        person.c.forEach((child, idx) => {
+          content += `<div style="padding:4px 0;border-bottom:1px solid #f0f0f0">${idx+1}. ${child.n}${child.b ? ' ('+child.b+')' : ''}</div>`;
+        });
+        content += '</div></div>';
+      }
+      
+      document.getElementById('detail-content').innerHTML = content;
+      document.getElementById('details').classList.add('active');
+    }
+
+    function closeDetails() {
+      document.getElementById('details').classList.remove('active');
+    }
+
+    function collapseAll() {
+      expandedNodes = new Set(['1.1']);
+      renderTree();
+    }
+
+    function expandAll() {
+      const collectIds = (node) => {
+        expandedNodes.add(node.i);
+        if (node.c) node.c.forEach(collectIds);
+      };
+      collectIds(treeData);
+      renderTree();
+    }
+
+    function expandToGen(gen) {
+      expandedNodes = new Set();
+      const collect = (node) => {
+        if (node.g <= gen) {
+          expandedNodes.add(node.i);
+          if (node.c) node.c.forEach(collect);
+        }
+      };
+      collect(treeData);
+      renderTree();
+    }
+
+    document.getElementById('search').addEventListener('input', renderTree);
+
+    // Initial render
+    renderTree();
+  </script>
+</body>
+</html>
